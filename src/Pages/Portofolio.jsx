@@ -192,12 +192,11 @@ export default function FullWidthTabs() {
             backgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}>
-            Portfolio Showcase
+            Vitrine du portfolio
           </span>
         </h2>
         <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base mt-2">
-          Explore my journey through projects, certifications, and technical expertise. 
-          Each section represents a milestone in my continuous learning path.
+          Explorez mon parcours à travers des projets, des certifications et mon expertise technique. Chaque section représente une étape importante dans mon cheminement d'apprentissage continu.
         </p>
       </div>
 

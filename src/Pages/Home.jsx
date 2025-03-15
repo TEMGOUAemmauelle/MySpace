@@ -12,7 +12,7 @@ const StatusBadge = memo(() => (
       <div className="relative px-3 sm:px-4 py-2 rounded-full bg-black/40 backdrop-blur-xl border border-white/10">
         <span className="bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-transparent bg-clip-text sm:text-sm text-[0.7rem] font-medium flex items-center">
           <Sparkles className="sm:w-4 sm:h-4 w-3 h-3 mr-2 text-blue-400" />
-          Ready to Innovate
+          Prêt à innover 
         </span>
       </div>
     </div>
@@ -25,14 +25,14 @@ const MainTitle = memo(() => (
       <span className="relative inline-block">
         <span className="absolute -inset-2 bg-gradient-to-r from-[#6366f1] to-[#a855f7] blur-2xl opacity-20"></span>
         <span className="relative bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
-          Frontend
+         Fullstack
         </span>
       </span>
       <br />
       <span className="relative inline-block mt-2">
         <span className="absolute -inset-2 bg-gradient-to-r from-[#6366f1] to-[#a855f7] blur-2xl opacity-20"></span>
         <span className="relative bg-gradient-to-r from-[#6366f1] to-[#a855f7] bg-clip-text text-transparent">
-          Developer
+          Développeur 
         </span>
       </span>
     </h1>
@@ -77,11 +77,11 @@ const SocialLink = memo(({ icon: Icon, link }) => (
 const TYPING_SPEED = 100;
 const ERASING_SPEED = 50;
 const PAUSE_DURATION = 2000;
-const WORDS = ["Network & Telecom Student", "Tech Enthusiast"];
-const TECH_STACK = ["React", "Javascript", "Node.js", "Tailwind"];
+const WORDS = [" Étudiante en Réseaux & Sécurité", "Passionné de Technologie"];
+const TECH_STACK = ["React", "Javascript", "Node.js", "Python"];
 const SOCIAL_LINKS = [
-  { icon: Github, link: "https://github.com/sailijar" },
-  { icon: Linkedin, link: "https://www.linkedin.com/in/mhd-sailijar-dirya?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app " },
+  { icon: Github, link: "https://github.com/TEMGOUAemmauelle" },
+  { icon: Linkedin, link: "https://www.linkedin.com/in/emmanuelle-guethe-fobanke-temgoua-8346252b1?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" },
   { icon: Instagram, link: "https://www.instagram.com/lijar_/?hl=id" }
 ];
 
@@ -183,7 +183,7 @@ const Home = () => {
                 <p className="text-base md:text-lg text-gray-400 max-w-xl leading-relaxed font-light"
                   data-aos="fade-up"
                   data-aos-delay="1000">
-                  Menciptakan Website Yang Inovatif, Fungsional, dan User-Friendly untuk Solusi Digital.
+                  Créer des sites web innovants, fonctionnels et conviviaux pour des solutions digitales
                 </p>
 
                 {/* Tech Stack */}
@@ -195,7 +195,7 @@ const Home = () => {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-row gap-3 w-full justify-start" data-aos="fade-up" data-aos-delay="1400">
-                  <CTAButton href="#Portofolio" text="Projects" icon={ExternalLink} />
+                  <CTAButton href="#Portofolio" text="Projets" icon={ExternalLink} />
                   <CTAButton href="#Contact" text="Contact" icon={Mail} />
                 </div>
 

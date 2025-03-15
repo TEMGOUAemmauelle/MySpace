@@ -34,8 +34,8 @@ const ContactPage = () => {
     setIsSubmitting(true);
 
     Swal.fire({
-      title: 'Sending Message...',
-      html: 'Please wait while we send your message',
+      title: 'Envoyer un message...',
+      html: 'Veuillez patienter pendant que nous envoyons votre message',
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -52,8 +52,8 @@ const ContactPage = () => {
 
       // Show success message
       Swal.fire({
-        title: 'Success!',
-        text: 'Your message has been sent successfully!',
+        title: 'Succès!',
+        text: 'Votre message a bien été envoyé !',
         icon: 'success',
         confirmButtonColor: '#6366f1',
         timer: 2000,
@@ -68,8 +68,8 @@ const ContactPage = () => {
       });
     } catch (error) {
       Swal.fire({
-        title: 'Error!',
-        text: 'Something went wrong. Please try again later.',
+        title: 'Erreur!',
+        text: 'Quelque chose a mal tourné. Veuillez réessayer plus tard.',
         icon: 'error',
         confirmButtonColor: '#6366f1'
       });
@@ -96,7 +96,7 @@ const ContactPage = () => {
               WebkitTextFillColor: "transparent",
             }}
           >
-            Contact Me
+            Contactez-moi
           </span>
         </h2>
         <p
@@ -104,7 +104,7 @@ const ContactPage = () => {
           data-aos-duration="1100"
           className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base mt-2"
         >
-          Got a question? Send me a message, and I'll get back to you soon.
+          Vous avez une question ? Envoyez-moi un message, et je vous répondrai bientôt.
         </p>
       </div>
 
@@ -121,10 +121,10 @@ const ContactPage = () => {
             <div className="flex justify-between items-start mb-8">
               <div>
                 <h2 className="text-4xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#a855f7]">
-                  Get in Touch
+                Contactez-nous
                 </h2>
                 <p className="text-gray-400">
-                  Have something to discuss? Send me a message and let's talk.
+                Vous avez quelque chose à discuter ? Envoyez-moi un message et parlons-en.
                 </p>
               </div>
               <Share2 className="w-10 h-10 text-[#6366f1] opacity-50" />
@@ -198,7 +198,7 @@ const ContactPage = () => {
                 className="w-full bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#6366f1]/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <Send className="w-5 h-5" />
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                {isSubmitting ? 'Envoi...' : 'Envoyer un message'}
               </button>
             </form>
 

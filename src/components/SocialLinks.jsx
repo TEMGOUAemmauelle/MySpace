@@ -10,10 +10,10 @@ import {
 const socialLinks = [
   {
     name: "LinkedIn",
-    displayName: "Let's Connect",
-    subText: "on LinkedIn",
+    displayName: "Connectons-nous",
+    subText: "sur LinkedIn",
     icon: Linkedin,
-    url: "https://www.linkedin.com/in/mhd-sailijar-dirya?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app ",
+    url: "https://www.linkedin.com/in/emmanuelle-guethe-fobanke-temgoua-8346252b1?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
     color: "#0A66C2",
     gradient: "from-[#0A66C2] to-[#0077B5]",
     isPrimary: true
@@ -21,7 +21,7 @@ const socialLinks = [
   {
     name: "Instagram",
     displayName: "Instagram",
-    subText: "@sailijar_",
+    subText: "@Gates_Tems_",
     icon: Instagram,
     url: "https://www.instagram.com/ekizr_/?hl=id",
     color: "#E4405F",
@@ -30,25 +30,25 @@ const socialLinks = [
   {
     name: "YouTube",
     displayName: "Youtube",
-    subText: "@sailijar",
+    subText: "@Gates_Tems",
     icon: Youtube,
-    url: "https://www.youtube.com/@eki_zulfar",
+    url: "https://www.youtube.com/@Gates_Tems",
     color: "#FF0000",
     gradient: "from-[#FF0000] to-[#CC0000]"
   },
   {
     name: "GitHub",
     displayName: "Github",
-    subText: "@sailijar",
+    subText: "@Gates_Tems",
     icon: Github,
-    url: "https://github.com/sailijar",
+    url: "https://github.com/TEMGOUAemmauelle",
     color: "#ffffff",
     gradient: "from-[#333] to-[#24292e]"
   },
   {
     name: "TikTok",
     displayName: "Tiktok",
-    subText: "@sailijar_",
+    subText: "@Gates_Tems_",
     icon: ({ className, ...props }) => (
      <svg width="24px" height="24px" viewBox="0 0 45 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Tiktok</title>
@@ -76,7 +76,7 @@ const SocialLinks = () => {
     <div className="w-full bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-6 py-8 backdrop-blur-xl">
       <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
         <span className="inline-block w-8 h-1 bg-indigo-500 rounded-full"></span>
-        Connect With Me
+        Connectez-vous avec moi
       </h3>
 
       <div className="flex flex-col gap-4">
