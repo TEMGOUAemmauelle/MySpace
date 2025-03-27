@@ -101,7 +101,34 @@ const ProjectDetails = () => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
-    
+    // Récupérer les projets depuis le localStorage
+const storeProjects = JSON.parse(localStorage.getItem("projects")) || [];
+
+// Trouver le projet à modifier (par exemple, avec un id spécifique)
+const projectIdToModify = 1; // Remplacez par l'id du projet à modifier
+const projectToModify = storeProjects.find((p) => p.id === projectIdToModify);
+
+if (projectToModify) {
+  // Modifier les données du projet
+  projectToModify.Title = "Nouveau titre";
+  projectToModify.Description = "Nouvelle description";
+  projectToModify.TechStack = ["React", "Tailwind", "Node.js"];
+  projectToModify.Features = ["Nouvelle fonctionnalité 1", "Nouvelle fonctionnalité 2"];
+  projectToModify.Link = "https://nouveau-lien.com";
+  projectToModify.Github = "https://github.com/nouveau-repo";
+
+  // Mettre à jour le tableau des projets
+  const updatedProjects = storeProjects.map((p) =>
+    p.id === projectIdToModify ? projectToModify : p
+  );
+
+  // Remettre les données mises à jour dans le localStorage
+  localStorage.setItem("projects", JSON.stringify(updatedProjects));
+
+  console.log("Projet modifié avec succès !");
+} else {
+  console.log("Projet non trouvé.");
+}
     window.scrollTo(0, 0);
     const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
     const selectedProject = storedProjects.find((p) => String(p.id) === id);
