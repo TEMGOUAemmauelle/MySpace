@@ -7,8 +7,8 @@ const Navbar = () => {
     const [activeSection, setActiveSection] = useState("Home");
     
     const navItems = [
-        { href: "#Home", label: "Home" },
-        { href: "#About", label: "About" },
+        { href: "#Home", label: "Accueil" },
+        { href: "#About", label: "A propos" },
         { href: "#Portofolio", label: "Portofolio" },
         { href: "#Contact", label: "Contact" },
     ];
