@@ -24,7 +24,7 @@ async function uploadCertificates() {
         title: cert.title  || null,
         issuer: cert.issuer  || null,
         date: cert.date,
-        imag: cert.img,
+        ImgSertif: cert.ImgSertif,
         credentialId: cert.credentialId || null,
         createdAt: new Date()
       });
