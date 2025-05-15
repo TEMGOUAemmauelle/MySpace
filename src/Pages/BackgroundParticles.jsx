@@ -1,84 +1,28 @@
-import { useCallback } from "react";
+// src/components/AnimatedBackground.jsx
+import React, { useCallback } from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
-import { loadExternalBubbleInteraction } from "@tsparticles/interaction-external-bubble";
+//import { loadFull } from "tsparticles"; // if you are going to use `loadFull`, install the "tsparticles" package too.
+import { loadSlim } from "tsparticles-slim"; 
 
 const BackgroundParticles = () => {
-  const particlesInit = useCallback(async (engine) => {
-    // Charge toutes les fonctionnalités
-    await loadFull(engine);
-    // Charge le mode 'bubble' pour les interactions
-    await loadExternalBubbleInteraction(engine);
-  }, []);
+  
+  const particlesInit = useCallback(async engine => {
+        console.log(engine);
+        // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
+        // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+        // starting from v2 you can add only the features you need reducing the bundle size
+        //await loadFull(engine);
+        await loadSlim(engine);
+    }, []);
+
+    const particlesLoaded = useCallback(async container => {
+        await console.log(container);
+    }, []);
 
   return (
-    <Particles
-      id="tsparticles"
-      init={particlesInit}
-      options={{
-        fullScreen: { enable: true, zIndex: 0 },
-        background: {
-          color: {
-            value: "#030014"
-          }
-        },
-        fpsLimit: 60,
-        interactivity: {
-          events: {
-            onHover: {
-              enable: true,
-              mode: "grab"
-            },
-            resize: true
-          },
-          modes: {
-            grab: {
-              distance: 140,
-              links: {
-                opacity: 0.5
-              }
-            }
-          }
-        },
-        particles: {
-          color: {
-            value: "#a855f7"
-          },
-          links: {
-            color: "#6366f1",
-            distance: 150,
-            enable: true,
-            opacity: 0.3,
-            width: 1
-          },
-          move: {
-            enable: true,
-            speed: 1.5,
-            direction: "none",
-            outModes: {
-              default: "bounce"
-            }
-          },
-          number: {
-            value: 60,
-            density: {
-              enable: true,
-              area: 800
-            }
-          },
-          opacity: {
-            value: 0.3
-          },
-          shape: {
-            type: "circle"
-          },
-          size: {
-            value: { min: 1, max: 3 }
-          }
-        },
-        detectRetina: true
-      }}
-    />
+    <Particles id="tsparticles" url="http://foo.bar/particles.json" init={particlesInit} loaded={particlesLoaded} />
+  
   );
 };
 

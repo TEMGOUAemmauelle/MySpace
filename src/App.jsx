@@ -23,6 +23,7 @@ const LandingPage = ({ showWelcome, setShowWelcome }) => {
 
       {!showWelcome && (
         <>
+        
           <Navbar />
           <AnimatedBackground />
           <Home />
