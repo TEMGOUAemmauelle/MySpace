@@ -6,6 +6,7 @@ import Komentar from "../components/Commentar";
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import AnimatedBackground from "../components/Background";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -80,7 +81,7 @@ const ContactPage = () => {
 
   return (
     <>
-      <div className="text-center lg:mt-[5%] mt-10 mb-2 sm:px-0 px-[5%]">
+      <div className="relative text-center lg:mt-[5%] mt-10 mb-2 sm:px-0 px-[5%]">
         <h2
           data-aos="fade-down"
           data-aos-duration="1000"

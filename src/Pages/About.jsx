@@ -2,6 +2,7 @@ import React, { useEffect, memo, useMemo } from "react"
 import { FileText, Code, Award, Globe, ArrowUpRight, Sparkles, UserCheck } from "lucide-react"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import AnimatedBackground from "../components/Background"
 
 // Memoized Components
 const Header = memo(() => (
@@ -187,9 +188,11 @@ const AboutPage = () => {
       className="h-auto pb-[10%] text-white overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] mt-10 sm-mt-0" 
       id="About"
     >
+      
       <Header />
 
       <div className="w-full mx-auto pt-8 sm:pt-12 relative">
+        <AnimatedBackground />
         <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div className="space-y-6 text-center lg:text-left">
             <h2 
