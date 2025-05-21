@@ -161,11 +161,11 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#030014] overflow-hidden" id="Home">
-      <div className={`relative z-10 transition-all duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
+      <div className={`relative z-0 transition-all duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
         <div className="container  mx-auto px-[6%] sm:px-6 lg:px-[0%] min-h-screen">
           <div className="flex flex-col lg:flex-row items-center justify-center h-screen md:justify-between gap-0 sm:gap-12 lg:gap-20">
             {/* Left Column */}
-           <div className="w-full lg:w-1/2 mt-[450px] lg:mt-0 lg:mt-0 space-y-6 sm:space-y-8 text-left lg:text-left order-1 lg:order-1 lg:mt-0"
+           <div className="w-full lg:w-1/2 mt-[50px] lg:mt-0 lg:mt-0 space-y-6 sm:space-y-8 text-left lg:text-left order-1 lg:order-1 lg:mt-0"
      data-aos="fade-right"
      data-aos-delay="200">
               <div className="space-y-4 sm:space-y-6">
@@ -211,7 +211,7 @@ const Home = () => {
 
            
             {/* Right Column - Optimized Lottie Animation */}
-            <div className="w-full lg:w-1/2 ... order-1 lg:order-2">
+            <div className="relative h-[250px] sm:h-[400px] md:h-[500px] lg:h-screen w-full order-1 lg:order-2">
                 <AnimatedSphere isHovering={isHovering} isReconstructed={isLoaded} />
             </div>
           </div>
