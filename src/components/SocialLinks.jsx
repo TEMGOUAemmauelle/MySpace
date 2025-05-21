@@ -23,7 +23,7 @@ const socialLinks = [
     displayName: "Instagram",
     subText: "@Gates_Tems_",
     icon: Instagram,
-    url: "https://www.instagram.com/ekizr_/?hl=id",
+    url: "https://www.instagram.com/Gates/?hl=id",
     color: "#E4405F",
     gradient: "from-[#833AB4] via-[#E4405F] to-[#FCAF45]"
   },
