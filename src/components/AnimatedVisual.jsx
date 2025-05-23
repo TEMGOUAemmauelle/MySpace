@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import Particles from 'react-tsparticles';
 import { loadSlim } from 'tsparticles-slim';
 
-// Composant RobotAnimation
+// Composant AnimatedSphere
 export default function AnimatedSphere() {
   // Références pour les éléments du DOM et les objets Three.js
   const canvasContainerRef = useRef(null);
@@ -21,7 +21,7 @@ export default function AnimatedSphere() {
 
   // Références pour les variables d'animation
   const velocity = useRef(new THREE.Vector3(0, 0, 0));
-  const robotAnimationPhase = useRef(0); // 0: falling, 1: constructing, 2: constructed, 3: deconstructing, 4: deconstructed
+  const robotAnimationPhase = useRef(0); // 0: falling, 1: constructing, 2: constructed (final state)
   const phaseStartTime = useRef(0);
   const animationFrameId = useRef(null);
   const controlsRef = useRef(null);
@@ -34,15 +34,17 @@ export default function AnimatedSphere() {
 
   // Initialisation de Three.js et de la scène
   useEffect(() => {
-    if (!canvasContainerRef.current) return;
+    if (!canvasContainerRef.current) {
+      console.error("AnimatedSphere: canvasContainerRef est null au montage.");
+      return;
+    }
 
     const currentContainer = canvasContainerRef.current;
+    console.log("AnimatedSphere: Dimensions du conteneur au montage:", currentContainer.clientWidth, currentContainer.clientHeight);
 
     // Scène, Caméra, Rendu
     sceneRef.current = new THREE.Scene();
-    cameraRef.current = new THREE.PerspectiveCamera(60, currentContainer.clientWidth / currentContainer.clientHeight, 0.1, 1000);
-    cameraRef.current.position.set(0, 5, 10);
-
+    // Utilisation d'un fond transparent pour la scène Three.js pour laisser passer le CSS du parent
     rendererRef.current = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     rendererRef.current.setSize(currentContainer.clientWidth, currentContainer.clientHeight);
     rendererRef.current.setPixelRatio(window.devicePixelRatio);
@@ -51,31 +53,45 @@ export default function AnimatedSphere() {
 
     currentContainer.appendChild(rendererRef.current.domElement);
 
-    // Lumières
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    cameraRef.current = new THREE.PerspectiveCamera(60, currentContainer.clientWidth / currentContainer.clientHeight, 0.1, 1000);
+    cameraRef.current.position.set(0, 5, 10); // Position initiale de la caméra
+
+    // Lumières améliorées pour un meilleur rendu PBR
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Lumière ambiante plus douce
     sceneRef.current.add(ambientLight);
-    const pointLight = new THREE.PointLight(0xffffff, 1);
-    pointLight.position.set(10, 10, 10);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // Lumière directionnelle pour les ombres
+    directionalLight.position.set(5, 10, 7);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
+    directionalLight.shadow.camera.left = -10;
+    directionalLight.shadow.camera.right = 10;
+    directionalLight.shadow.camera.top = 10;
+    directionalLight.shadow.camera.bottom = -10;
+    sceneRef.current.add(directionalLight);
+
+    const pointLight = new THREE.PointLight(0xa855f7, 1.5, 50); // Lumière ponctuelle violette
+    pointLight.position.set(-5, 5, 5);
     sceneRef.current.add(pointLight);
-    const spotLight = new THREE.SpotLight(0xffffff, 1);
-    spotLight.position.set(5, 15, 5);
-    spotLight.angle = 0.3;
-    spotLight.penumbra = 1;
+
+    const spotLight = new THREE.SpotLight(0x6366f1, 1.2, 50, Math.PI * 0.2, 0.5, 2); // Lumière spot bleue
+    spotLight.position.set(5, 8, -5);
     spotLight.castShadow = true;
-    spotLight.shadow.mapSize.width = 1024;
-    spotLight.shadow.mapSize.height = 1024;
-    spotLight.shadow.camera.near = 0.5;
-    spotLight.shadow.camera.far = 50;
     sceneRef.current.add(spotLight);
 
-    // Sphère rebondissante (corps du robot)
-    const sphereGeometry = new THREE.SphereGeometry(sphereRadius, 32, 32);
-    const sphereMaterial = new THREE.MeshPhongMaterial({
-      color: '#8A2BE2',
+
+    // Sphère rebondissante (corps du robot) - Utilisation de MeshStandardMaterial
+    const sphereGeometry = new THREE.SphereGeometry(sphereRadius, 64, 64); // Plus de segments pour une meilleure apparence
+    const sphereMaterial = new THREE.MeshStandardMaterial({
+      color: '#8A2BE2', // Violet plus profond
       emissive: '#8A2BE2',
-      emissiveIntensity: 0.2,
-      specular: '#ffffff',
-      shininess: 100
+      emissiveIntensity: 0.3, // Lumière émissive subtile
+      roughness: 0.4, // Moins rugueux pour un aspect plus lisse
+      metalness: 0.7, // Aspect métallique
+      envMapIntensity: 0.5 // Intensité de la carte d'environnement (si présente)
     });
     sphereRef.current = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphereRef.current.position.y = 5;
@@ -83,21 +99,21 @@ export default function AnimatedSphere() {
     sceneRef.current.add(sphereRef.current);
 
     // --- Parties du robot ---
-    const robotMemberMaterial = new THREE.MeshPhongMaterial({
-      color: '#6A5ACD',
-      specular: '#ffffff',
-      shininess: 100
+    const robotMemberMaterial = new THREE.MeshStandardMaterial({
+      color: '#6A5ACD', // Bleu-violet
+      roughness: 0.6,
+      metalness: 0.3
     });
-    const eyeMaterial = new THREE.MeshPhongMaterial({
-      color: 0x00FFFF,
+    const eyeMaterial = new THREE.MeshStandardMaterial({
+      color: 0x00FFFF, // Cyan vif
       emissive: 0x00FFFF,
-      emissiveIntensity: 0.8,
-      specular: 0xffffff,
-      shininess: 100
+      emissiveIntensity: 1.5, // Forte émission pour les yeux
+      roughness: 0.1,
+      metalness: 0.8
     });
 
     // Yeux
-    const eyeGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+    const eyeGeometry = new THREE.SphereGeometry(0.15, 32, 32); // Plus de segments
     leftEyeRef.current = new THREE.Mesh(eyeGeometry, eyeMaterial);
     leftEyeRef.current.initialRelativePosition = new THREE.Vector3(-0.3, 0.3, sphereRadius + 0.1);
     leftEyeRef.current.position.set(0, 0, 0);
@@ -111,7 +127,7 @@ export default function AnimatedSphere() {
     sphereRef.current.add(rightEyeRef.current);
 
     // Antennes
-    const antennaGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 8);
+    const antennaGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 16); // Plus de segments
     antennaLeftRef.current = new THREE.Mesh(antennaGeometry, robotMemberMaterial);
     antennaLeftRef.current.initialRelativePosition = new THREE.Vector3(-0.3, sphereRadius + 0.4, 0);
     antennaLeftRef.current.position.set(0, 0, 0);
@@ -126,12 +142,12 @@ export default function AnimatedSphere() {
     antennaRightRef.current.visible = false;
     sphereRef.current.add(antennaRightRef.current);
 
-    // Ombre au sol (cercle)
+    // Ombre au sol (cercle) - Matériau plus doux pour l'ombre
     const shadowGeometry = new THREE.CircleGeometry(sphereRadius * 1.5, 32);
     const shadowMaterial = new THREE.MeshBasicMaterial({
       color: 0x000000,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.4, // Opacité légèrement augmentée
       side: THREE.DoubleSide
     });
     shadowRef.current = new THREE.Mesh(shadowGeometry, shadowMaterial);
@@ -140,19 +156,19 @@ export default function AnimatedSphere() {
     shadowRef.current.receiveShadow = true;
     sceneRef.current.add(shadowRef.current);
 
-    // Maille 3D légère (grille)
+    // Maille 3D légère (grille) - Améliorée
     gridGroupRef.current = new THREE.Group();
     const gridSize = 20;
     const divisions = 50;
-    const color1 = new THREE.Color('#4B0082');
-    const color2 = new THREE.Color('#8A2BE2');
+    const gridColor1 = new THREE.Color('#4B0082'); // Violet foncé
+    const gridColor2 = new THREE.Color('#8A2BE2'); // Violet clair
 
     for (let i = 0; i <= divisions; i++) {
       const x = (i / divisions - 0.5) * gridSize;
       const verticalLineMaterial = new THREE.LineBasicMaterial({
-        color: new THREE.Color().lerpColors(color1, color2, i / divisions),
+        color: new THREE.Color().lerpColors(gridColor1, gridColor2, i / divisions),
         transparent: true,
-        opacity: 0.3
+        opacity: 0.2 // Opacité plus faible pour un look plus subtil
       });
       const verticalLineGeometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(x, 0, -gridSize / 2),
@@ -161,9 +177,9 @@ export default function AnimatedSphere() {
       gridGroupRef.current.add(new THREE.LineSegments(verticalLineGeometry, verticalLineMaterial));
 
       const horizontalLineMaterial = new THREE.LineBasicMaterial({
-        color: new THREE.Color().lerpColors(color1, color2, i / divisions),
+        color: new THREE.Color().lerpColors(gridColor1, gridColor2, i / divisions),
         transparent: true,
-        opacity: 0.3
+        opacity: 0.2
       });
       const horizontalLineGeometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(-gridSize / 2, 0, x),
@@ -181,12 +197,15 @@ export default function AnimatedSphere() {
     controlsRef.current.enableRotate = true;
     controlsRef.current.minPolarAngle = 0;
     controlsRef.current.maxPolarAngle = Math.PI / 2 - 0.1;
+    controlsRef.current.dampingFactor = 0.05; // Ajout d'un facteur d'amortissement pour un mouvement plus fluide
+    controlsRef.current.enableDamping = true; // Active l'amortissement
 
     // Gestion du redimensionnement du conteneur
     const resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
         if (entry.target === currentContainer) {
           const { width, height } = entry.contentRect;
+          console.log("AnimatedSphere: Conteneur redimensionné à:", width, height);
           cameraRef.current.aspect = width / height;
           cameraRef.current.updateProjectionMatrix();
           rendererRef.current.setSize(width, height);
@@ -260,7 +279,7 @@ export default function AnimatedSphere() {
 
           if (Math.abs(velocity.current.y) < 0.5) {
             velocity.current.y = 0;
-            robotAnimationPhase.current = 1;
+            robotAnimationPhase.current = 1; // Passe à la phase de construction
             phaseStartTime.current = currentTime;
             if (currentLeftEye) currentLeftEye.visible = true;
             if (currentRightEye) currentRightEye.visible = true;
@@ -279,13 +298,13 @@ export default function AnimatedSphere() {
         if (currentAntennaRight) currentAntennaRight.position.lerpVectors(new THREE.Vector3(0, 0, 0), currentAntennaRight.initialRelativePosition, progress);
 
         if (progress >= 1) {
-          robotAnimationPhase.current = 2;
+          robotAnimationPhase.current = 2; // Passe à la phase construite (état final)
           phaseStartTime.current = currentTime;
         }
 
-      } else if (currentPhase === 2) { // Phase 2: Robot construit (maintien)
-        const holdDuration = 3;
-        const elapsed = (currentTime - phaseStartTime.current) / 1000;
+      } else if (currentPhase === 2) { // Phase 2: Robot construit (état final, maintien)
+        // Le robot reste construit indéfiniment ici.
+        // La logique de déconstruction et de réinitialisation est supprimée.
 
         if (currentAntennaLeft && currentAntennaRight) {
           const antennaWobble = Math.sin(currentTime * 0.008) * 0.05;
@@ -296,44 +315,18 @@ export default function AnimatedSphere() {
         const pulseScale = 1 + Math.sin(currentTime * 0.003) * 0.02;
         currentSphere.scale.set(pulseScale, pulseScale, pulseScale);
 
-        if (elapsed >= holdDuration) {
-          robotAnimationPhase.current = 3;
-          phaseStartTime.current = currentTime;
+        // Pulsation des yeux
+        if (currentLeftEye && currentRightEye) {
+          const eyePulse = 1 + Math.sin(currentTime * 0.005) * 0.1;
+          currentLeftEye.scale.set(eyePulse, eyePulse, eyePulse);
+          currentRightEye.scale.set(eyePulse, eyePulse, eyePulse);
         }
-
-      } else if (currentPhase === 3) { // Phase 3: Déconstruction
-        const deconstructionDuration = 1.5;
-        const elapsed = (currentTime - phaseStartTime.current) / 1000;
-        const progress = Math.min(1, elapsed / deconstructionDuration);
-
-        if (currentLeftEye) currentLeftEye.position.lerpVectors(currentLeftEye.initialRelativePosition, new THREE.Vector3(0, 0, 0), progress);
-        if (currentRightEye) currentRightEye.position.lerpVectors(currentRightEye.initialRelativePosition, new THREE.Vector3(0, 0, 0), progress);
-        if (currentAntennaLeft) currentAntennaLeft.position.lerpVectors(currentAntennaLeft.initialRelativePosition, new THREE.Vector3(0, 0, 0), progress);
-        if (currentAntennaRight) currentAntennaRight.position.lerpVectors(currentAntennaRight.initialRelativePosition, new THREE.Vector3(0, 0, 0), progress);
-
-        currentSphere.scale.set(1, 1, 1);
-
-        if (progress >= 1) {
-          if (currentLeftEye) currentLeftEye.visible = false;
-          if (currentRightEye) currentRightEye.visible = false;
-          if (currentAntennaLeft) currentAntennaLeft.visible = false;
-          if (currentAntennaRight) currentAntennaRight.visible = false;
-
-          robotAnimationPhase.current = 4;
-          phaseStartTime.current = currentTime;
-        }
-
-      } else if (currentPhase === 4) { // Phase 4: Déconstruit (maintien)
-        const deconstructedHoldDuration = 1;
-        const elapsed = (currentTime - phaseStartTime.current) / 1000;
-
-        if (elapsed >= deconstructedHoldDuration) {
-          robotAnimationPhase.current = 0;
-          phaseStartTime.current = currentTime;
-          currentSphere.position.y = 5;
-          velocity.current.set(0, 0, 0);
-        }
+        // Il n'y a plus de transition vers la phase 3 (déconstruction)
+        // if (elapsed >= holdDuration) { ... }
       }
+      // Les phases 3 et 4 ne seront plus atteintes
+      // else if (currentPhase === 3) { ... }
+      // else if (currentPhase === 4) { ... }
 
       // Mise à jour de l'ombre
       if (currentShadow) {
@@ -357,7 +350,7 @@ export default function AnimatedSphere() {
       }
 
       if (controlsRef.current) {
-        controlsRef.current.update();
+        controlsRef.current.update(); // Important pour l'amortissement
       }
       rendererRef.current.render(sceneRef.current, cameraRef.current);
     };
@@ -377,7 +370,8 @@ export default function AnimatedSphere() {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden font-sans">
+    // La div racine prend toute la hauteur de l'écran pour l'animation de fond
+    <div className="relative w-full h-screen overflow-hidden font-sans bg-gradient-to-br from-[#030014] to-[#1a0033]">
       {/* Conteneur pour les particules */}
       <Particles
         id="tsparticles"
@@ -386,18 +380,18 @@ export default function AnimatedSphere() {
         options={{
           background: {
             color: {
-              value: 'transparent',
+              value: 'transparent', // Transparent pour laisser passer le dégradé du parent
             },
           },
           fpsLimit: 60,
           interactivity: {
             events: {
               onClick: {
-                enable: true,
+                enable: false, // Désactivé pour ne pas bloquer les clics
                 mode: 'push',
               },
               onHover: {
-                enable: true,
+                enable: false, // Désactivé pour ne pas bloquer les survols
                 mode: 'repulse',
               },
               resize: true,
@@ -414,12 +408,12 @@ export default function AnimatedSphere() {
           },
           particles: {
             color: {
-              value: ['#8A2BE2', '#4B0082', '#9932CC', '#6A5ACD'],
+              value: ['#8A2BE2', '#4B0082', '#9932CC', '#6A5ACD', '#FFFFFF'], // Ajout de blanc
             },
             links: {
               color: '#ffffff',
               distance: 150,
-              enable: false,
+              enable: false, // Pas de liens pour un look plus épuré
               opacity: 0.4,
               width: 1,
             },
@@ -441,31 +435,31 @@ export default function AnimatedSphere() {
                 enable: true,
                 area: 800,
               },
-              value: 80,
+              value: 100, // Plus de particules
             },
             opacity: {
-              value: 0.5,
+              value: 0.6, // Opacité légèrement augmentée
             },
             shape: {
               type: 'circle',
             },
             size: {
-              value: { min: 1, max: 3 },
+              value: { min: 1, max: 2 }, // Particules plus petites
             },
           },
           detectRetina: true,
         }}
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 pointer-events-none" // Maintenu pour les particules
       />
 
       {/* Conteneur pour le canvas Three.js */}
       <div
         ref={canvasContainerRef}
-        className="absolute inset-0 z-10"
+        className="absolute inset-0 z-10" // Permet l'interaction avec OrbitControls
       ></div>
 
-      {/* Texte d'information */}
-      <div className="info-text">
+      {/* Texte d'information stylisé */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-gray-300 text-sm md:text-base bg-black/30 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/10 z-20">
         <p>Faites glisser pour changer la vue.</p>
       </div>
     </div>
